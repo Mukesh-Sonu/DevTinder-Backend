@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
+const PRIVATE_KEY = "devTinder";
 
 const { Schema } = mongoose;
 
@@ -71,6 +74,19 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+// This is called offloading methods to schema methods
+userSchema.methods.getJWT = function () {
+  const user = this;
+  const token = jwt.sign({ _id: user }, PRIVATE_KEY, { expiresIn: "7d" });
+  return token;
+};
+
+userSchema.methods.isPasswordValid = async function (password) {
+  const hashPassword = this.password;
+  console.log(hashPassword, password, "sakdnskn");
+  return await bcrypt.compare(password, hashPassword);
+};
 
 const User = mongoose.model("User", userSchema);
 
