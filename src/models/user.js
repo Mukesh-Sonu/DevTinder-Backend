@@ -45,12 +45,16 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      validate(value) {
-        const genderSet = new Set(["male", "female", "others"]);
-        if (!genderSet.has(value)) {
-          throw new Error("Gender data is not valid");
-        }
+      enum: {
+        values: ["male", "female", "others"],
+        message: `{VALUE} is not a valid gender type`,
       },
+      // validate(value) {
+      //   const genderSet = new Set(["male", "female", "others"]);
+      //   if (!genderSet.has(value)) {
+      //     throw new Error("Gender data is not valid");
+      //   }
+      // },
     },
     photoUrl: {
       type: String,
@@ -78,13 +82,12 @@ const userSchema = new Schema(
 // This is called offloading methods to schema methods
 userSchema.methods.getJWT = function () {
   const user = this;
-  const token = jwt.sign({ _id: user }, PRIVATE_KEY, { expiresIn: "7d" });
+  const token = jwt.sign({ _id: user._id }, PRIVATE_KEY, { expiresIn: "7d" });
   return token;
 };
 
 userSchema.methods.isPasswordValid = async function (password) {
   const hashPassword = this.password;
-  console.log(hashPassword, password, "sakdnskn");
   return await bcrypt.compare(password, hashPassword);
 };
 
