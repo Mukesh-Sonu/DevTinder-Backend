@@ -5,12 +5,16 @@ const {
   encryptPassword,
 } = require("../utils/validation");
 const User = require("../models/user");
+const { constructUserData } = require("../utils/user");
 
 const router = express.Router();
 
 router.get("/profile/view", userAuth, (req, res) => {
   try {
-    res.status(200).send(req.user);
+    const USER_SAFE_DATA = constructUserData(req.user);
+    res.status(200).send({
+      data: USER_SAFE_DATA,
+    });
   } catch (error) {
     res.status(400).send("Error: " + error);
   }
@@ -23,20 +27,22 @@ router.patch("/profile/edit", userAuth, async (req, res) => {
       throw new Error("Invalid Edit request");
     }
 
-    const loggedInUser = {};
+    const updatedData = {};
 
-    Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
-    const user = await User.findByIdAndUpdate(userId, loggedInUser, {
+    Object.keys(req.body).forEach((key) => (updatedData[key] = req.body[key]));
+    const user = await User.findByIdAndUpdate(userId, updatedData, {
       returnDocument: "after",
       runValidators: true,
     });
 
     res.status(200).json({
       message: `${user.firstName}, your profile updated successfully`,
-      data: loggedInUser,
+      data: user,
     });
   } catch (error) {
-    res.status(400).send("Error saving the user in the DB" + error.message);
+    res.status(400).send({
+      message: error.message,
+    });
   }
 });
 

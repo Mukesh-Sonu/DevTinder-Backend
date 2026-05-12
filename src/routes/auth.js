@@ -5,6 +5,7 @@ const {
   encryptPassword,
   isEmailValid,
 } = require("../utils/validation");
+const { constructUserData } = require("../utils/user");
 
 const router = express.Router();
 
@@ -37,8 +38,15 @@ router.post("/signup", async (req, res) => {
       about,
       skills,
     });
-    await user.save();
-    res.send("Saved successfully");
+
+    const savedUser = await user.save();
+    const token = savedUser.getJWT();
+    res.cookie("token", token);
+
+    res.send({
+      message: "User signup successful !!!",
+      data: savedUser,
+    });
   } catch (error) {
     res.status(400).send("Error saving the user in the DB" + error.message);
   }
@@ -72,12 +80,13 @@ router.post("/login", async (req, res) => {
     const token = user.getJWT();
     res.cookie("token", token);
 
+    const USER_SAFE_DATA = constructUserData(user);
+
     const userObj = user.toObject();
     delete userObj.password;
 
-    console.log(user);
     return res.status(200).send({
-      data: userObj,
+      data: USER_SAFE_DATA,
     });
   } catch (error) {
     res.status(400).send("Error: " + error.message);
@@ -89,7 +98,9 @@ router.post("/logout", async (req, res) => {
     expires: new Date(Date.now()),
   });
 
-  res.status(200).send("User loggedout successfully");
+  res.status(200).send({
+    message: "User loggedout successfully",
+  });
 });
 
 module.exports = router;
