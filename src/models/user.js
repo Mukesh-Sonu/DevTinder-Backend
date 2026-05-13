@@ -76,7 +76,7 @@ const userSchema = new Schema(
       default: false,
     },
     membershipType: {
-      type: string,
+      type: String,
     },
   },
   {
