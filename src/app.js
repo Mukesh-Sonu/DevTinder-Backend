@@ -6,8 +6,8 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
+const dotenv = require("dotenv");
 const app = express();
-const port = 3000;
 
 // we are whitlisting this domain name, or else cookies will not be set in the browser
 const corsOption = {
@@ -15,6 +15,7 @@ const corsOption = {
   credentials: true, // without this Browser will NOT send cookies - req.cookies will be empty
 };
 
+dotenv.config();
 app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
@@ -26,8 +27,8 @@ app.use("/", userRouter);
 connectDB()
   .then(() => {
     console.log("DB connection established");
-    app.listen(port, () => {
-      console.log(`Example app listening on port ${port}`);
+    app.listen(process.env.PORT, () => {
+      console.log(`Example app listening on port ${process.env.PORT}`);
     });
   })
   .catch((err) => {

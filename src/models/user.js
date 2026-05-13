@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-const PRIVATE_KEY = "devTinder";
 
 const { Schema } = mongoose;
 
@@ -81,7 +80,9 @@ const userSchema = new Schema(
 // This is called offloading methods to schema methods
 userSchema.methods.getJWT = function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id }, PRIVATE_KEY, { expiresIn: "7d" });
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
   return token;
 };
 

@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const PRIVATE_KEY = "devTinder";
 
 const userAuth = async (req, res, next) => {
   try {
@@ -12,7 +11,7 @@ const userAuth = async (req, res, next) => {
       });
     }
 
-    const decodedObj = jwt.verify(token, PRIVATE_KEY);
+    const decodedObj = jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodedObj;
     const user = await User.findOne({ _id });
 
