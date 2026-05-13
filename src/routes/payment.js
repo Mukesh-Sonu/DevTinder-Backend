@@ -70,7 +70,7 @@ router.post("/payment/webhook", async (req, res) => {
     // razorpay doc
     // https://razorpay.com/docs/webhooks/validate-test/
 
-    const webhookSignature = req.get["X-Razorpay-Signature"];
+    const webhookSignature = req.get("X-Razorpay-Signature");
 
     const isWebhookValid = validateWebhookSignature(
       JSON.stringify(req.body),
