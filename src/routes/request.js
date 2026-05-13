@@ -3,6 +3,7 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 const router = express.Router();
+// const sendEmail = require("../utils/sendEmail");
 
 // This API is only for interested or ignored
 router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
@@ -49,6 +50,10 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
     });
 
     const data = await connectionRequest.save();
+
+    // For sending emails
+    // const emailResult = await sendEmail.run();
+    // console.log(emailResult, "emailResult");
 
     const dynamicMessage =
       status === "interested"

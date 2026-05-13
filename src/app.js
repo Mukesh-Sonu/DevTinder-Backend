@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/database");
@@ -6,7 +7,6 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
-const dotenv = require("dotenv");
 const app = express();
 
 // we are whitlisting this domain name, or else cookies will not be set in the browser
@@ -15,7 +15,6 @@ const corsOption = {
   credentials: true, // without this Browser will NOT send cookies - req.cookies will be empty
 };
 
-dotenv.config();
 app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
