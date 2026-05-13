@@ -108,4 +108,14 @@ router.get("/user/feed", userAuth, async (req, res) => {
   }
 });
 
+router.get("/user/premium/verify", userAuth, async (req, res) => {
+  const user = req.user;
+
+  return res.status(200).send({
+    data: {
+      isPremium: user.isPremium ? true : false,
+    },
+  });
+});
+
 module.exports = router;

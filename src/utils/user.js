@@ -14,6 +14,7 @@ const constructUserData = (user) => {
     photoUrl,
     skills,
     createdAt,
+    isPremium,
   } = user;
 
   return {
@@ -27,6 +28,7 @@ const constructUserData = (user) => {
     photoUrl,
     skills,
     createdAt,
+    isPremium,
   };
 };
 
