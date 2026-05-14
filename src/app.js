@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const http = require("http");
 const cors = require("cors");
 const connectDB = require("./config/database");
 const cookieParser = require("cookie-parser");
@@ -8,7 +9,10 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
+const chatRouter = require("./routes/chat");
+const initializeSocket = require("./utils/socket");
 const app = express();
+const server = http.createServer(app);
 
 // we are whitlisting this domain name, or else cookies will not be set in the browser
 const corsOption = {
@@ -24,11 +28,14 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
+app.use("/", chatRouter);
+
+initializeSocket(server);
 
 connectDB()
   .then(() => {
     console.log("DB connection established");
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`Example app listening on port ${process.env.PORT}`);
     });
   })
